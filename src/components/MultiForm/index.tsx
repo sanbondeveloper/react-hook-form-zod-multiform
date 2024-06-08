@@ -1,4 +1,6 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Step, useMultiForm } from '../../hooks/useMultiForm';
 import { Button, Header } from './styles';
@@ -14,7 +16,7 @@ const steps: Step<FormData>[] = [
     element: <EmailForm />,
   },
   {
-    name: ['confirm-password', 'password'],
+    name: ['confirmPassword', 'password'],
     title: '비밀번호',
     element: <PasswordForm />,
   },
@@ -30,20 +32,32 @@ const steps: Step<FormData>[] = [
   },
 ];
 
-export interface FormData {
-  email: string;
-  password: string;
-  'confirm-password': string;
-  nickname: string;
-  acquisition: {
-    google: boolean;
-    friend: boolean;
-    other: boolean;
-  };
-}
+const FormSchema = z
+  .object({
+    email: z.string().email({ message: '이메일 형식에 맞게 입력해주세요.' }),
+    password: z.string().min(6, { message: '비밀번호는 6글자 이상입니다.' }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: '비밀번호는 6글자 이상입니다.' }),
+    nickname: z.string(),
+    acquisition: z.object({
+      google: z.boolean(),
+      friend: z.boolean(),
+      other: z.boolean(),
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: '비밀번호가 일치하지 않습니다.',
+  });
+
+export type FormData = z.infer<typeof FormSchema>;
 
 function MultiForm() {
-  const methods = useForm<FormData>({ mode: 'onBlur' });
+  const methods = useForm<FormData>({
+    mode: 'onBlur',
+    resolver: zodResolver(FormSchema),
+  });
   const {
     currentStepIndex,
     currentTitle,
@@ -54,6 +68,8 @@ function MultiForm() {
   } = useMultiForm({ steps });
 
   const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+
+  console.log(methods.formState.errors);
 
   return (
     <FormProvider {...methods}>
@@ -69,7 +85,6 @@ function MultiForm() {
               const result = await methods.trigger(
                 steps[currentStepIndex]['name']
               );
-
               if (result) {
                 next();
               }

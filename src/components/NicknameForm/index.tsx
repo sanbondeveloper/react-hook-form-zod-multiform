@@ -13,7 +13,7 @@ function NicknameForm() {
         type="text"
         label="nickname"
         error={errors.nickname && errors.nickname.message?.toString()}
-        {...register('nickname', { required: '닉네임을 입력하세요.' })}
+        {...register('nickname')}
       />
 
       {/* <label htmlFor="nickname">nickname</label>

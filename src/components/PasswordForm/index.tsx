@@ -5,8 +5,21 @@ function PasswordForm() {
   const {
     register,
     formState: { errors },
-    watch,
+    // watch,
   } = useFormContext();
+
+  /*
+    {
+          required: '비밀번호 확인을 입력하세요.',
+          validate: (value) =>
+            value === watch('password') || '비밀번호가 다릅니다.',
+        }
+
+        {
+          required: '비밀번호를 입력하세요.',
+          minLength: { value: 6, message: '6글자 이상 입력하세요.' },
+        }
+  */
 
   return (
     <div>
@@ -14,23 +27,16 @@ function PasswordForm() {
         type="password"
         label="password"
         error={errors.password && errors.password.message?.toString()}
-        {...register('password', {
-          required: '비밀번호를 입력하세요.',
-          minLength: { value: 6, message: '6글자 이상 입력하세요.' },
-        })}
+        {...register('password')}
       />
       <Input
         type="password"
-        label="confirm-password"
+        label="confirmPassword"
         error={
-          errors['confirm-password'] &&
-          errors['confirm-password'].message?.toString()
+          errors['confirmPassword'] &&
+          errors['confirmPassword'].message?.toString()
         }
-        {...register('confirm-password', {
-          required: '비밀번호 확인을 입력하세요.',
-          validate: (value) =>
-            value === watch('password') || '비밀번호가 다릅니다.',
-        })}
+        {...register('confirmPassword')}
       />
 
       {/* <label htmlFor="password">password</label>
