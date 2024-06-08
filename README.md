@@ -9,5 +9,5 @@
 
 ## 개선해야 할 부분
 
-[ ]zod의 `refine` 사용시 페이지를 각가의 Form으로 만들어줘야 될거 같다.
-[ ]useMultiForm 좀 더 개선해보자
+- [ ]zod의 `refine` 사용시 페이지를 각가의 Form으로 만들어줘야 될거 같다.
+- [ ]useMultiForm 좀 더 개선해보자
